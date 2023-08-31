@@ -7,27 +7,41 @@
 # @lc code=start
 class Solution:
     def isValidSudoku(self, board: List[List[str]]) -> bool:
-        # create hash map for board coordinates:value
-        # key: tuple(coordinates), value: number in square
-        board_hash = {}
-        numbers = []
-        unique_numbers = []
-        for row in range(9):
-            for column in range(9):
-                coordinate = (row, column)
-                value = board[row][column]
-                board_hash.setdefault(coordinate, value)
-        board_items = board_hash.items()
-        # verify correct values in row
-        for i in range(len(board_items)):
-            value = board_hash[i][1]
-            if value != ".":
-                numbers.append(value)
-        unique_numbers = set(numbers)
-        if len(unique_numbers) != len (numbers):
-            return False
-        # verify correct values in column
-        # verify correct values in squares
+        # 9 sets of row values
+        rows = [set() for x in range(9)]
+        # 9 sets of column values
+        columns = [set() for x in range(9)]
+        # 3 lists of 3 sets, will use // to know which square
+        squares = [[set() for x in range(3)] for y in range(3)]
+
+        # ADD VALUES TO ROWS, COLUMNS, SQUARES LISTS
+        # iterate over lists that contain row values
+        for i in range(9):
+            # iterate over values
+            for j in range(9):
+                value = board[i][j]
+                if value.isdigit():
+                    if value in rows[i] or value in columns[j] or value in squares[i//3][j//3]:
+                        return False
+                    # add row values
+                    rows[i].add(value)
+                    # add column values
+                    columns[j].add(value)
+                    # add square values
+                    """
+                    Indexes range from 0 to 8.
+                    0 // 3 = 0
+                    1 // 3 = 0
+                    2 // 3 = 0
+                    3 // 3 = 1
+                    4 // 3 = 1
+                    5 // 3 = 1
+                    6 // 3 = 2
+                    7 // 3 = 2
+                    8 // 3 = 2
+                    """
+                    squares[i//3][j//3].add(value)
+        return True
 
 # @lc code=end
 
